@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -91,6 +91,8 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="">
         <DataTablePagination table={table}></DataTablePagination>
       </div>
     </div>

@@ -1,5 +1,6 @@
-import { DataTablePagination } from "@/components/DataTablePagination";
-import OrdersDataTable from "@/features/order/OrdersDataTable";
+import { DataTable } from "@/components/DataTable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { columns } from "@/features/order/columns";
 
 const getData = async (): Promise<any> => {
   var res = await fetch("http://localhost:5103/api/admin/orders");
@@ -11,7 +12,8 @@ const page = async () => {
   const data = await getData();
   return (
     <div>
-      <OrdersDataTable data={data}></OrdersDataTable>
+      <h1>Orders</h1>
+      <DataTable columns={columns} data={data}></DataTable>
     </div>
   );
 };
