@@ -6,6 +6,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -17,6 +18,7 @@ import {
   LayoutDashboard,
   LogOut,
   NotepadText,
+  PackageSearch,
   Settings,
   Truck,
   UsersRound,
@@ -35,6 +37,11 @@ const menuItems = [
     title: "Dashboard",
     icon: LayoutDashboard,
     href: "/admin/dashboard",
+  },
+  {
+    title: "Products",
+    icon: PackageSearch,
+    href: "/admin/products",
   },
   {
     title: "Orders",
@@ -74,18 +81,21 @@ const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {menuItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                render={
-                  <Link href={item.href}>
-                    <item.icon></item.icon>
-                    <span>{item.title}</span>
-                  </Link>
-                }
-              />
-            </SidebarMenuItem>
-          ))}
+          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarMenu>
+            {menuItems.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  render={
+                    <Link href={item.href}>
+                      <item.icon></item.icon>
+                      <span>{item.title}</span>
+                    </Link>
+                  }
+                />
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
