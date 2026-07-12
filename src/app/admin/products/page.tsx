@@ -4,8 +4,7 @@ import { columns as ProductColumns } from "@/features/product/table/columns";
 import { columns as CategoryColumns } from "@/features/product/category/columns";
 import { Product } from "@/features/product/types";
 import { Category } from "@/features/product/category/types";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import AddForm from "@/features/product/form";
 
 const getProductsData = async (): Promise<Product[]> => {
   var res = await fetch("http://localhost:5103/api/admin/products");
@@ -32,10 +31,7 @@ const page = async () => {
             <TabsTrigger value="categories">Categories</TabsTrigger>
           </TabsList>
           <div className="flex items-center">
-            <Button variant="outline">
-              <Plus></Plus>
-              <span>Add Section</span>
-            </Button>
+            <AddForm></AddForm>
           </div>
         </div>
         <TabsContent value="products">
