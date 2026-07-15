@@ -21,6 +21,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod/v4";
+import { actionProductAdd } from "../actions";
+import { useState } from "react";
 
 export const productAddFormSchema = z.object({
   name: z
@@ -30,13 +32,18 @@ export const productAddFormSchema = z.object({
   description: z.string().max(50, "description max length is 50 characters"),
   priceRegular: z
     .number()
-    .min(1, "priceRegular is required")
+    .min(0.01, "priceRegular is required")
     .nonnegative("priceRegular cannot be a negative number"),
   priceDiscount: z
     .number()
     .nonnegative("priceDiscount cannot be a negative number"),
-  stockAmount: z.int().nonnegative("stockAmount cannot be a negative number"),
+  stockAmount: z
+    .number()
+    .int()
+    .nonnegative("stockAmount cannot be a negative number"),
 });
+
+export type ProductAddFormSchema = z.infer<typeof productAddFormSchema>;
 
 export const productEditFormSchema = z.object({
   name: z
@@ -46,15 +53,18 @@ export const productEditFormSchema = z.object({
   description: z.string().max(50, "description max length is 50 characters"),
   priceRegular: z
     .number()
-    .min(1, "priceRegular is required")
+    .min(0.01, "priceRegular is required")
     .nonnegative("priceRegular cannot be a negative number"),
   priceDiscount: z
     .number()
     .nonnegative("priceDiscount cannot be a negative number"),
-  stockAmount: z.int().nonnegative("stockAmount cannot be a negative number"),
+  stockAmount: z
+    .number()
+    .int()
+    .nonnegative("stockAmount cannot be a negative number"),
 });
 
-const AddForm = () => {
+const AddProductModal = () => {
   const form = useForm({
     resolver: zodResolver(productAddFormSchema),
     defaultValues: {
@@ -65,18 +75,20 @@ const AddForm = () => {
       stockAmount: 0,
     },
   });
+  const [open, setOpen] = useState(false);
 
-  function onSubmit(data: z.infer<typeof productAddFormSchema>) {
+  function onSubmit(data: ProductAddFormSchema) {
+    const result = actionProductAdd(data);
     console.log(data);
   }
 
   return (
     <div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <form id="form-add-product" onSubmit={form.handleSubmit(onSubmit)}>
           <DialogTrigger
             render={
-              <Button variant="outline" className="rounded-lg">
+              <Button variant="default" className="rounded-lg">
                 Add Product
               </Button>
             }
@@ -95,6 +107,7 @@ const AddForm = () => {
                     <Input
                       {...field}
                       id={field.name}
+                      required
                       aria-invalid={fieldState.invalid}
                       placeholder="product name"
                       autoComplete="off"
@@ -134,8 +147,15 @@ const AddForm = () => {
                     <Input
                       {...field}
                       id="form-price-regular"
+                      required
+                      type="number"
+                      min="0.01"
                       aria-invalid={fieldState.invalid}
                       placeholder="123"
+                      onChange={(e) => {
+                        field.onChange(e.target.valueAsNumber);
+                      }}
+                      value={field.value ?? ""}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -154,8 +174,14 @@ const AddForm = () => {
                     <Input
                       {...field}
                       id="form-price-discount"
+                      type="number"
+                      min="0"
                       aria-invalid={fieldState.invalid}
                       placeholder=""
+                      onChange={(e) => {
+                        field.onChange(e.target.valueAsNumber);
+                      }}
+                      value={field.value ?? ""}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -174,8 +200,14 @@ const AddForm = () => {
                     <Input
                       {...field}
                       id="form-stock-amount"
+                      type="number"
+                      min="0"
                       aria-invalid={fieldState.invalid}
                       placeholder=""
+                      onChange={(e) => {
+                        field.onChange(e.target.valueAsNumber);
+                      }}
+                      value={field.value ?? ""}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -185,7 +217,13 @@ const AddForm = () => {
               />
             </FieldGroup>
             <DialogFooter>
-              <Button type="submit" form="form-add-product">
+              <Button
+                type="submit"
+                form="form-add-product"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
                 Submit
               </Button>
               <DialogClose
@@ -203,4 +241,4 @@ const AddForm = () => {
   );
 };
 
-export default AddForm;
+export default AddProductModal;
