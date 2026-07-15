@@ -11,6 +11,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import {
   EllipsisVertical,
@@ -37,11 +40,6 @@ const menuItems = [
     title: "Dashboard",
     icon: LayoutDashboard,
     href: "/admin/dashboard",
-  },
-  {
-    title: "Products",
-    icon: PackageSearch,
-    href: "/admin/products",
   },
   {
     title: "Orders",
@@ -95,6 +93,27 @@ const AppSidebar = () => {
                 />
               </SidebarMenuItem>
             ))}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                render={
+                  <Link href="/admin/products">
+                    <PackageSearch />
+                    <span>Products</span>
+                  </Link>
+                }
+              />
+              <SidebarMenuSub>
+                <SidebarMenuSubItem>
+                  <SidebarMenuSubButton
+                    render={
+                      <Link href="/admin/products/categories">
+                        <span>Categories</span>
+                      </Link>
+                    }
+                  />
+                </SidebarMenuSubItem>
+              </SidebarMenuSub>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
