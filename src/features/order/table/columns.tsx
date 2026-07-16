@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 import { Order } from "../types";
+import { format } from "date-fns";
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -45,6 +46,12 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "orderDate",
     header: "Order Date",
+    cell: ({ row }) => {
+      const date = String(row.getValue("orderDate"));
+      const formattedDate = format(date, "Pp");
+
+      return <span className="font-normal">{formattedDate}</span>;
+    },
   },
   {
     accessorKey: "orderStatus",
