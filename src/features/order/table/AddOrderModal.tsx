@@ -31,6 +31,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { ChevronDown, ChevronDownIcon } from "lucide-react";
+import { format } from "date-fns";
 
 export const orderAddFormSchema = z.object({
   orderAddress: z
@@ -101,11 +109,18 @@ const AddOrderModal = () => {
     },
   });
   const [open, setOpen] = useState(false);
+  const [date, setDate] = useState<Date>();
 
-  async function onSubmit(data: OrderAddFormSchema) {
-    console.log("AddOrderModal onSubmit formData: ", data);
-    const res = await actionOrderAdd(data);
-    console.log("AddOrderModal onSubmit action res: ", res);
+  async function onSubmit(formData: OrderAddFormSchema) {
+    try {
+      console.log("AddOrderModal onSubmit formData: ", formData);
+      const res = await actionOrderAdd(formData);
+      setOpen(false);
+      form.reset();
+      console.log("AddOrderModal onSubmit action result: ", res);
+    } catch (error) {
+      console.error("AddOrderModal onSubmit error: ", error);
+    }
   }
 
   return (
@@ -149,12 +164,32 @@ const AddOrderModal = () => {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                    <Input
-                      {...field}
-                      id={field.name}
-                      aria-invalid={fieldState.invalid}
-                      placeholder="order date"
-                    />
+                    <Popover>
+                      <PopoverTrigger
+                        render={
+                          <Button
+                            variant="outline"
+                            data-empty={!date}
+                            className="data-[empty=true]:text-muted-foreground flex justify-between text-left font-normal"
+                          >
+                            {date ? (
+                              format(date, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <ChevronDownIcon data-icon="inline-end" />
+                          </Button>
+                        }
+                      ></PopoverTrigger>
+                      <PopoverContent>
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={setDate}
+                          defaultMonth={date}
+                        />
+                      </PopoverContent>
+                    </Popover>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -197,13 +232,7 @@ const AddOrderModal = () => {
               />
             </FieldGroup>
             <DialogFooter>
-              <Button
-                type="submit"
-                form="form-add-order"
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
+              <Button type="submit" form="form-add-order">
                 Submit
               </Button>
               <DialogClose
