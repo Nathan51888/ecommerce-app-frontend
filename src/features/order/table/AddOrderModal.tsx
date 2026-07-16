@@ -37,7 +37,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { ChevronDown, ChevronDownIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 
 export const orderAddFormSchema = z.object({
@@ -45,10 +45,10 @@ export const orderAddFormSchema = z.object({
     .string()
     .min(1, "order address is required")
     .max(50, "order address max length is 50 characters"),
-  orderDate: z
-    .string()
-    .min(1, "order date is required")
-    .max(50, "order date max length is 50 characters"),
+  orderDate: z.date({
+    error: (issue) =>
+      issue.input === undefined ? "order date is required" : "Invalid date",
+  }),
   orderStatus: z
     .string()
     .min(1, "order status is required")
@@ -60,10 +60,9 @@ export const orderEditFormSchema = z.object({
     .string()
     .min(1, "order address is required")
     .max(50, "order address max length is 50 characters"),
-  orderDate: z
-    .string()
-    .min(1, "order date is required")
-    .max(50, "order date max length is 50 characters"),
+  orderDate: z.date({
+    error: (issue) => (issue.input === undefined ? "Required" : "Invalid date"),
+  }),
   orderStatus: z
     .string()
     .min(1, "order status is required")
@@ -104,12 +103,10 @@ const AddOrderModal = () => {
     resolver: zodResolver(orderAddFormSchema),
     defaultValues: {
       orderAddress: "",
-      orderDate: "",
       orderStatus: "",
     },
   });
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date>();
 
   async function onSubmit(formData: OrderAddFormSchema) {
     try {
@@ -149,7 +146,7 @@ const AddOrderModal = () => {
                       {...field}
                       id={field.name}
                       aria-invalid={fieldState.invalid}
-                      placeholder="order address"
+                      placeholder="Order address"
                       autoComplete="off"
                     />
                     {fieldState.invalid && (
@@ -163,30 +160,29 @@ const AddOrderModal = () => {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Order Date</FieldLabel>
                     <Popover>
                       <PopoverTrigger
                         render={
                           <Button
                             variant="outline"
-                            data-empty={!date}
+                            data-empty={!field.value}
                             className="data-[empty=true]:text-muted-foreground flex justify-between text-left font-normal"
                           >
-                            {date ? (
-                              format(date, "PPP")
+                            {field.value ? (
+                              format(field.value, "PPP")
                             ) : (
                               <span>Pick a date</span>
                             )}
-                            <ChevronDownIcon data-icon="inline-end" />
+                            <CalendarIcon></CalendarIcon>
                           </Button>
                         }
                       ></PopoverTrigger>
                       <PopoverContent>
                         <Calendar
                           mode="single"
-                          selected={date}
-                          onSelect={setDate}
-                          defaultMonth={date}
+                          selected={field.value}
+                          onSelect={field.onChange}
                         />
                       </PopoverContent>
                     </Popover>
