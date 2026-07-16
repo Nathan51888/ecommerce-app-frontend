@@ -77,9 +77,16 @@ const AddProductModal = () => {
   });
   const [open, setOpen] = useState(false);
 
-  function onSubmit(data: ProductAddFormSchema) {
-    const result = actionProductAdd(data);
-    console.log(data);
+  function onSubmit(formData: ProductAddFormSchema) {
+    try {
+      console.log("AddProductModal onSubmit formData: ", formData);
+      const res = actionProductAdd(formData);
+      setOpen(false);
+      form.reset();
+      console.log("AddProductModal onSubmit action result: ", res);
+    } catch (error) {
+      console.error("AddProductModal onSubmit error: ", error);
+    }
   }
 
   return (
@@ -217,13 +224,7 @@ const AddProductModal = () => {
               />
             </FieldGroup>
             <DialogFooter>
-              <Button
-                type="submit"
-                form="form-add-product"
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
+              <Button type="submit" form="form-add-product">
                 Submit
               </Button>
               <DialogClose

@@ -52,9 +52,16 @@ const AddCategoryModal = () => {
   });
   const [open, setOpen] = useState(false);
 
-  async function onSubmit(data: CategoryAddFormSchema) {
-    const res = await actionCategoryAdd(data);
-    console.log(data);
+  async function onSubmit(formData: CategoryAddFormSchema) {
+    try {
+      console.log("AddCategoryModal onSubmit formData: ", formData);
+      const res = await actionCategoryAdd(formData);
+      setOpen(false);
+      form.reset();
+      console.log("AddCategoryModal onSubmit result: ", res);
+    } catch (error) {
+      console.error("AddCategoryModal onSubmit error: ", error);
+    }
   }
 
   return (
@@ -112,13 +119,7 @@ const AddCategoryModal = () => {
               />
             </FieldGroup>
             <DialogFooter>
-              <Button
-                type="submit"
-                form="form-add-category"
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
+              <Button type="submit" form="form-add-category">
                 Submit
               </Button>
               <DialogClose
