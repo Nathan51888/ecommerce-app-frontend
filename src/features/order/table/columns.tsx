@@ -13,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
-import { Order } from "./types";
+import { Order } from "../types";
 
 export const columns: ColumnDef<Order>[] = [
   {
